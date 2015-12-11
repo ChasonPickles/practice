@@ -1,0 +1,48 @@
+So visitors are pretty darn useful, but what can you do when you have an existing library that you want to interact with?
+
+A good resolution is to provide your client with an abstract class they can extend in order to prop up an interface as a visitor to your objects
+
+So say you've been having a great developing a massive vector of concrete types. But now you want to iterate through them and look at a field that only a few of them might have.
+
+You could write 500 lines of dynamic cast, but that is really bad. As it turns out, your superclass has this nice function called accept, which will be nice guy and return you reference to it's true type (all the way down the inheritance tree.
+
+But here is the thing, you can't just tell the object to give you it's this (you will have to provide a swath of functions to actually catch the value, without again losing info), you must then do visitor class
+
+Abstract:
+
+class Base {
+	public:
+		virtual void f() = 0;
+		Base * virtual accept () = 0;
+
+};
+
+class Derived {
+	public:
+		f() {}
+		Derived * accept () { return *this;} // recall, the return values do not interefere w/ the ovveride
+};
+
+// this still has an issue....
+
+class Base {
+	public:
+		virtual void f() = 0;
+		virtual accept (Visitor & v) = 0;
+
+};
+
+class Derived {
+	public:
+		f() {}
+		accept (Visitor & v) { v.visit(*this); } // visit will be an abtract class with pure virtual visits for every concrete type.
+};
+
+// ----------------------------------------------------------------------------
+
+Have a look @ the example in this directory to see the mechanics yourself
+
+
+// post coding thoughts:
+
+- it might be hard to get polymorphic behaviour out of a visitor, because there is only one function to overload (the visits). But going forward we could use information to store information from a visit call inside the object itself, all depends on what we want to accomplish at the end of the day.
