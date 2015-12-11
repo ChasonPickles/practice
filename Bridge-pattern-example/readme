@@ -1,0 +1,11 @@
+Motivation:
+
+Suppose, we wrote a library and then delivered it to a client. Now, our header files are #included everywhere. Our clients may as well be using our special types everywhere.
+
+A year later, we find a great way to refactor our types to use wayy less memory per instance, so what we'll do is change our type defintins in our header files, and reship our code to our client! Easy, right? Nope.
+
+Because we already shipped our code, our clients code has already been compiled with our header files everywhere. The fact that they use our types non-trivially anywhere at all means they need to know the size of an instance of our custom types === compilation dependacy. This is quite an issue since our client will have to recompile their entire codebase.
+
+The best approach is to sidestep this problem altogether. Since our clients don't need to know about what is going on in our private fields, we will store them all in a struct, and have a pointer to that struct in an instance of our type. This way, we can freely change our fields, and because the client only knows about a pointer to our fields, they never have a compilation dependancy.
+
+check out each subdir, and see the difference. The examples are trivial, but they should illustrate why this pattern is useful when your program gets a lot bigger. 
